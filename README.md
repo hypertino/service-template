@@ -43,7 +43,7 @@ Also adds transitive dependency to [TypeSafe Config](https://github.com/lightben
 
 ## [typesafe-config-binders](https://github.com/hypertino/typesafe-config-binders)
 
-Read configuration to case class, example in [EntryPoint.scala](src/main/scala/com/hypertino/example/EntryPoint.scala)
+Read configuration to case class, example in [ExampleService.scala](src/main/scala/com/hypertino/example/ExampleService.scala)
 
 ```scala
   import com.hypertino.binders.config.ConfigBinders._
