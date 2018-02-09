@@ -1,0 +1,19 @@
+version: "3.4"
+services:
+    example:
+        image: "com.hypertino/service-template:${version:-latest}"
+        deploy:
+            replicas: 1
+            placement:
+                constraints:
+                    - node.labels.${TARGET_ENV:-local}==true
+            restart_policy:
+                condition: on-failure
+        ports:
+          - target: 10001
+            published: "${PORT_PREFIX:-10}001" #
+            protocol: tcp
+            mode: host
+
+        environment:
+            TARGET_ENV: "${TARGET_ENV:-local}"

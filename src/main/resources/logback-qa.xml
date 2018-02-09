@@ -1,0 +1,23 @@
+<configuration>
+  <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+    <withJansi>true</withJansi>
+    <encoder>
+      <pattern>%highlight(%.-3level) %cyan(%d{HH:mm:ss.SSS}) %yellow(%-35.35logger) %highlight(%msg) %n</pattern>
+    </encoder>
+  </appender>
+
+  <appender name="stash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+    <destination>logstash:12202</destination>
+
+    <!-- encoder is required -->
+    <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+      <customFields>{"source":"example-service-qa"}</customFields>
+    </encoder>
+    <keepAliveDuration>5 minutes</keepAliveDuration>
+  </appender>
+
+  <root level="DEBUG">
+    <appender-ref ref="stdout"/>
+    <appender-ref ref="stash" />
+  </root>
+</configuration>
