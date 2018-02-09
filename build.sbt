@@ -11,9 +11,7 @@ lazy val `service-template` = project in file(".") enablePlugins (BuildInfoPlugi
 
   libraryDependencies ++= Seq(
     "com.hypertino" %% "typesafe-config-binders" % "0.2.1",
-    "com.hypertino" %% "service-control" % "0.4.1",
     "com.hypertino" %% "service-config" % "0.2.8",
-    "io.monix" %% "monix" % "2.3.3",
     "ch.qos.logback" % "logback-classic" % "1.2.3",
     "com.typesafe.scala-logging" %% "scala-logging" % "3.7.2",
     "net.logstash.logback" % "logstash-logback-encoder" % "4.11"

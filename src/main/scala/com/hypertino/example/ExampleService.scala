@@ -1,48 +1,32 @@
 package com.hypertino.example
 
-import com.hypertino.service.control.api.Service
 import com.typesafe.config.Config
 import com.typesafe.scalalogging.StrictLogging
-import monix.execution.{Cancelable, Scheduler}
-import scaldi.{Injectable, Injector}
-
-import scala.concurrent.Future
-import scala.concurrent.duration._
 
 case class User(name: String, roles: Seq[String])
 case class ExampleConfig(title: String, users: Map[String, User])
 
-class ExampleService (implicit val injector: Injector) extends Service with Injectable with StrictLogging {
+class ExampleService (config: Config) extends Runnable with StrictLogging {
   private val serviceName = getClass.getName
-  private val config = inject[Config]
+
   import com.hypertino.binders.config.ConfigBinders._
   private val exampleConfig = config.read[ExampleConfig]("example-service")
-  private var cancelable: Option[Cancelable] = None
+  @volatile private var _stop = false
 
-  private implicit val scheduler = Scheduler.forkJoin(
-    name="example-service-scheduler",
-    parallelism=4,
-    maxThreads=128,
-    daemonic=false
-  )
-
-  logger.info(s"$serviceName is INITIALIZED")
-
-  override def startService(): Unit = {
+  override def run(): Unit = {
     logger.info(s"$serviceName is STARTED")
     logger.info(s"Current configuration: $exampleConfig")
 
-    cancelable = Some(scheduler.scheduleAtFixedRate(0.seconds,5.seconds) {
+    while (!_stop) {
       logger.info("working...")
       logger.trace("very hard!!!")
-    })
-    Thread.sleep(2000)
+      Thread.sleep(2000)
+    }
+    logger.info(s"$serviceName is STOPPED")
   }
 
-  override def stopService(controlBreak: Boolean, timeout: FiniteDuration): Future[Unit] = Future {
+  def stop(): Unit = {
     logger.info(s"$serviceName is STOPPING...")
-    cancelable.foreach(_.cancel)
-    scheduler.shutdown()
-    logger.info(s"$serviceName is STOPPED")
+    _stop = true
   }
 }

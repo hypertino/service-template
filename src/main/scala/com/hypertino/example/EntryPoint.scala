@@ -2,9 +2,7 @@ package com.hypertino.example
 
 import java.util.Locale
 
-import com.hypertino.service.config.ConfigModule
-import com.hypertino.service.control.ConsoleModule
-import com.hypertino.service.control.api.ServiceController
+import com.hypertino.service.config.ConfigLoader
 import com.typesafe.scalalogging.StrictLogging
 import scaldi.Injectable
 
@@ -18,10 +16,13 @@ object EntryPoint extends Injectable with StrictLogging {
 
     logger.info(s"Example Service is starting @ '$env' ${BuildInfo.toString}")
 
-    implicit val injector = new ExampleServiceModule ::
-      new ConsoleModule(Some("exampleService")) ::
-      ConfigModule(environment=Some(env))
-
-    inject[ServiceController].run()
+    val config = ConfigLoader(environment = Some(env))
+    val exampleService = new ExampleService(config)
+    Runtime.getRuntime.addShutdownHook(new Thread() {
+      override def run() {
+        exampleService.stop()
+      }
+    })
+    exampleService.run()
   }
 }
