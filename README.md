@@ -1,19 +1,22 @@
 # service-template
 
-Service template/example with logging, docker packaging, configuration handling and dependency injection. 
+Service template/example with logging, docker packaging, configuration handling and dependency injection.
+This template utilizes concept of _target environment_, e.g. qa, stage, prod, local, etc. Target environment should 
+be provided to the service as `TARGET_ENV` environment variable or `targetEnv` java system property.
+If not provided `local` environment is assumed.  
 
 # Howto
 
-build & run on host with target environment:
+Build docker image: 
+`sbt docker`
+
+Build & run on host with target environment:
 
 ```
 sbt ';set fork := true; set connectInput in run := true; set javaOptions ++= Seq("-DtargetEnv=qa"); run'
 ``` 
 
-Build docker image: 
-`sbt docker`
-
-Run in docker (background daemon):
+Run in docker as background daemon:
 
 ```
 docker run -d --name example-service -e TARGET_ENV=qa com.hypertino/service-template:latest
@@ -24,7 +27,7 @@ Run interactively in docker and remove after it stops:
 docker run -it --rm -e TARGET_ENV=qa com.hypertino/service-template:latest
 ```
 
-Run with docker-compose 
+Quick run with docker-compose 
 ```
 TARGET_ENV=qa docker-compose up
 ```
@@ -57,7 +60,7 @@ Also adds transitive dependency to [Scaldi](http://scaldi.org/)
 ## [logback](https://logback.qos.ch/) with logstash backend + [scala-logging](https://github.com/typesafehub/scala-logging)
 
 Configure in [logback.xml](src/main/resources/logback.xml), [logback-qa.xml](src/main/resources/logback-qa.xml), [logback-prod.xml](src/main/resources/logback-prod.xml) 
-and add more target environments if needed.
+and add more target environment log files if needed.
 
 ## [sbt-buildinfo](https://github.com/sbt/sbt-buildinfo) plugin 
 
