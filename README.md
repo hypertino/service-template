@@ -26,7 +26,6 @@ docker run -it --rm -e TARGET_ENV=qa com.hypertino/service-template:latest
 
 Run with docker-compose 
 ```
-cd deploy
 TARGET_ENV=qa docker-compose up
 ```
 
